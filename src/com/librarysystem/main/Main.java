@@ -2,40 +2,52 @@ package com.librarysystem.main;
 
 import com.librarysystem.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Librarian librarian = new Librarian(1, "sessizOl");
-        Library library = new Library(librarian);
-
+        Library library = new Library(1);
+        library.addLibrarian(librarian);
         Author author1 = new Author(1, "George Orwell");
         Author author2 = new Author(2, "Jose Saramago");
+        Author author3 = new Author(3, "tester testson");
 
-        Category category1 = new Category("Distopik");
-        Category category2 = new Category("Edebiyat");
 
-        Publisher publisher1 = new Publisher("Can Yayınları");
-        Publisher publisher2 = new Publisher("Can Yayınları");
+        Category category1 = new Category(1, "Distopik Roman");
+        Category category2 = new Category(2, "Roman");
+        Category category3 = new Category(3, "testo?");
 
-        User user1 = new User(1, "Halil", "Halil");
+        Publisher publisher1 = new Publisher(1, "Yayınevi", "Can Yayınları");
+        Publisher publisher2 = new Publisher(1, "Yayınevi", "Can Yayınları");
+
+        User user1 = new User(1, "1", "1");
         User user2 = new User(2, "test2", "Halil");
 
-        librarian.addUser(library, user1);
-        librarian.addUser(library, user2);
+        addUser(library, user1);
+        addUser(library, user2);
 
-        Book book1 = new Book(1, "1984", author1, category1);
-        Book book2 = new Book(2, "Körlük", author2, category2);
+        Book book1 = new Book(1, "1984", author1, category1, false, 5);
+        Book book2 = new Book(2, "Körlük", author2, category2, false, 4);
+        Book book3 = new Book(3, "test2", author3, category3, false, 1);
+        Book book4 = new Book(4, "test3", author3, category3, false, 1);
+        Book book5 = new Book(5, "test4", author3, category3, false, 1);
+        Book book6 = new Book(6, "test5", author3, category3, true, 2);
 
-        librarian.addBook(library, book1);
-        librarian.addBook(library, book2);
+        addBook(library, book1);
+        addBook(library, book2);
+        addBook(library, book3);
+        addBook(library, book4);
+        addBook(library, book5);
+        addBook(library, book6);
 
         Magazine magazine1 = new Magazine(3, "Dergi", publisher1);
+        addMagazine(magazine1);
 
-        library.addItem(magazine1);
-
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);;
 
         System.out.print("Kullanıcı Adı: ");
         String username = scanner.nextLine();
@@ -106,13 +118,14 @@ public class Main {
         System.out.print("Almak istediğiniz kitap ID'sini giriniz: ");
         int bookID = scanner.nextInt();
         scanner.nextLine();
-        Item item = library.getItems().get(bookID);
+        Object item = library.getBooks().get(bookID);
         if (item instanceof Book) {
             Book book = (Book) item;
             if (user.canBorrow()) {
-                user.borrow(book);
-                library.removeItem(book);
-                System.out.println(book.getTitle() + " ödünç alındı.");
+                user.borrowBook(book);
+                user.borrowedItems.add(book);
+                library.removeBook(book);
+                System.out.println(book.getName() + " ödünç alındı.");
             } else {
                 System.out.println("Ödünç alınamadı. Limitiniz dolu.");
             }
@@ -123,29 +136,34 @@ public class Main {
 
     private static void returnBook(User user, Library library, Scanner scanner) {
         System.out.println("İade etmek istediğiniz kitaplar:");
-        List<Item> borrowedItems = user.getBorrowedItems();
-        for (int i = 0; i < borrowedItems.size(); i++) {
-            Item item = borrowedItems.get(i);
-            System.out.println((i + 1) + ". " + item.getTitle());
+        ArrayList borrowedItems = new ArrayList(user.getBorrowedBooks());
+        borrowedItems.addAll(user.getBorrowedMagazines());
+        for (int i = 0; i < borrowedItems.size() - 1; i++) {
+            Object item = borrowedItems.get(i);
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                System.out.println((i + 1) + ". " + book.getName());
+            }
         }
         System.out.print("İade etmek istediğiniz kitap ID'sini girin: ");
         int bookNumber = scanner.nextInt();
         scanner.nextLine();
 
         if (bookNumber >= 1 && bookNumber <= borrowedItems.size()) {
-            Item item = borrowedItems.get(bookNumber - 1);
-            if (item instanceof Book && user.hasBorrowed(item)) {
-                Book book = (Book) item;
-                user.returnItem(book);
-                library.addItem(book);
-                int daysBorrowed = user.getDaysBorrowed(book);
-                if (daysBorrowed > 7) {
-                    double fine = (daysBorrowed - 7) * 0.5;
-                    user.payFine(fine);
-                    System.out.println(book.getTitle() + " kitabı iade edildi. " + fine + " dolar ceza ödendi.");
-                } else {
-                    System.out.println(book.getTitle() + " kitabı iade edildi.");
-                }
+            Book book = (Book) borrowedItems.get(bookNumber - 1);
+            if (book instanceof Book && user.bookHasBorrowed((Book) book)) {
+                user.returnItem((Book) book);
+                library.addBook((Book) book);
+
+//                int daysBorrowed = user.getDaysBorrowed((Book) book);
+//                if (daysBorrowed > 7) {
+//                    double fine = (daysBorrowed - 7) * 0.5;
+//                    user.payFine(fine);
+//                    System.out.println(((Book) book).getName() + " kitabı iade edildi. " + fine + " dolar ceza ödendi.");
+//                } else {
+//                    System.out.println(((Book) book).getName() + " kitabı iade edildi.");
+//                }
+                System.out.println(((Book) book).getName() + " kitabı iade edildi.");
             } else {
                 System.out.println("Geçersiz seçenek veya kitap kullanıcıya ait değil.");
             }
@@ -154,29 +172,30 @@ public class Main {
         }
     }
 
-
     private static void updateBook(User user, Library library, Scanner scanner) {
         System.out.println("Güncellemek istediğiniz kitabın ID'sini girin: ");
         int bookID = scanner.nextInt();
         scanner.nextLine();
 
-        Item item = library.getItems().get(bookID);
-        if (item instanceof Book) {
-            Book book = (Book) item;
-            if (user.hasBorrowed(book)) {
+        Book book = library.getBooks().get(bookID);
+        if (book instanceof Book) {
+            if (user.bookHasBorrowed(book)) {
                 System.out.println("Bu kitabı güncelleyemezsiniz. Kitap ödünç alınmış durumda.");
             } else {
                 System.out.print("Yeni başlık: ");
                 String newTitle = scanner.nextLine();
 
-                System.out.print("Yeni yazar ID: ");
-                int authorID = scanner.nextInt();
+                System.out.print("Yeni yazar adı: ");
+                String authorName = scanner.next();
                 scanner.nextLine();
-                Author newAuthor = library.getAuthorByID(authorID);
+                Author newAuthor = library.getAuthorByAuthorName(authorName);
+
+                Random random = new Random();
+                int randomNumber = random.nextInt(101000);
 
                 System.out.print("Yeni kategori adı: ");
                 String newCategoryName = scanner.nextLine();
-                Category newCategory = new Category(newCategoryName);
+                Category newCategory = new Category(randomNumber, newCategoryName);
 
                 book.updateBookInfo(newTitle, newAuthor, newCategory);
                 System.out.println("Kitap bilgileri güncellendi.");
@@ -188,21 +207,41 @@ public class Main {
 
     private static void listBooks(Library library) {
         System.out.println("Kütüphanedeki kitaplar:");
-        for (Item item : library.getItems()) {
-            System.out.println(item.getId() + ". " + item.getTitle());
+        for (Book book : library.getBooks()) {
+            System.out.println(book.toString());
         }
     }
+    private static void listMagazines(Library library) {
+        System.out.println("Kütüphanedeki kitaplar:");
+        for (Magazine magazine : library.getMagazines()) {
+            System.out.println(magazine.getMagazinename() + ". " + magazine.getTitle()  + ". " + magazine.isBorrowed());
+        }
+    }
+
     private static void listBooksByCategory(Library library, Scanner scanner) {
         System.out.print("Kategori adını giriniz: ");
         String categoryName = scanner.nextLine();
         List<Book> booksInCategory = library.getBooksByCategory(categoryName);
+        List<Magazine> magazinesInCategory = library.getMagazinesByCategory(categoryName);
 
         System.out.println("Kategori '" + categoryName + "' için bulunan kitaplar:");
         for (Book book : booksInCategory) {
-            System.out.println(book.getId() + ". " + book.getTitle() + " - " + book.getAuthor().getName());
+            System.out.println(book.getName());
+        }
+        for (Magazine magazine : magazinesInCategory) {
+            System.out.println(magazine.getMagazinename() + ". " + magazine.getTitle()  + ". " + magazine.isBorrowed());
         }
     }
 
+    public static List<Book> getBooksByAuthorId(int authorId, List<Book> bookList) {
+        List<Book> result = new ArrayList<>();
+        for (Book book : bookList) {
+            if (book.getAuthor().equals(authorId)) {
+                result.add(book);
+            }
+        }
+        return result;
+    }
     private static void listBooksByAuthor(Library library, Scanner scanner) {
         System.out.print("Yazar adını giriniz: ");
         String authorName = scanner.nextLine();
@@ -210,7 +249,34 @@ public class Main {
 
         System.out.println("Yazar '" + authorName + "' için bulunan kitaplar:");
         for (Book book : booksByAuthor) {
-            System.out.println(book.getId() + ". " + book.getTitle() + " - " + book.getCategory().getName());
+            System.out.println(book.getId() + ". " + book.getName() + " - " + book.getCategory().getName());
+            System.out.println();
         }
+    }
+
+    private static void listMagazinesByAuthor(Library library, Scanner scanner) {
+        System.out.print("Yazar adını giriniz: ");
+        String authorName = scanner.nextLine();
+        List<Magazine> magazinesByAuthor = library.getMagazinesByAuthor(authorName);
+
+        System.out.println("Yazar '" + authorName + "' için bulunan kitaplar:");
+        for (Magazine magazine : magazinesByAuthor) {
+            System.out.println(magazine.getMagazinename() + ". " + magazine.getTitle()  + ". " + magazine.isBorrowed());
+        }
+    }
+    public static void addBook(Library library, Book book) {
+        library.addBook(book);
+        System.out.println(book.getName() + " kütüphaneye eklendi.");
+    }
+
+    public static void addMagazine(Magazine magazine) {
+        Library library = new Library(1);
+        library.addMagazine(magazine);
+        System.out.println(magazine.getTitle() + " kütüphaneye eklendi.");
+    }
+
+    public static void addUser(Library library, User user) {
+        library.addUser(user);
+        System.out.println(user.getName() + " kütüphane üyesi olarak kaydedildi.");
     }
 }

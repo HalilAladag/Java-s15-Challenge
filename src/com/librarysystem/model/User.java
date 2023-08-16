@@ -1,15 +1,12 @@
 package com.librarysystem.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class User {
 
     private String name;
     private int borrowedBooksCount;
-    private Map<Item, Integer> borrowedItems;
+    public ArrayList borrowedItems = new ArrayList();
     private Map<Book, Integer> bookRatings;
     private double fineAmount;
     private String password;
@@ -17,7 +14,7 @@ public class User {
     public User(int id, String name,String password) {
 
         this.borrowedBooksCount = 0;
-        this.borrowedItems = new HashMap<>();
+        this.borrowedItems = new ArrayList();
         this.bookRatings = new HashMap<>();
         this.fineAmount = 0;
         this.password = password;
@@ -29,19 +26,34 @@ public class User {
     }
 
     //@Override
-    public List<Item> getBorrowedItems() {
-        return new ArrayList<>(borrowedItems.keySet());
+    public ArrayList getBorrowedBooks() {
+        Iterator<Object> iterator = borrowedItems.iterator();
+        while (iterator.hasNext()) {
+            Object item = iterator.next();
+            if (item instanceof Integer) {
+                iterator.remove();
+            }
+        }
+        ArrayList arrayList = new ArrayList(borrowedItems);
+        return arrayList;
     }
-
-    public void borrow(Book book) {
-        if (!borrowedItems.containsKey(book) && canBorrow()) {
-            borrowedItems.put(book, 14);
+    public List<Magazine> getBorrowedMagazines() {
+        return new ArrayList<>(borrowedItems);
+    }
+    public void borrowBook(Book book) {
+        if (!borrowedItems.contains(book) && canBorrow()) {
+            borrowedItems.add(book.getId());
             borrowedBooksCount++;
         }
     }
-
+    public void borrowMagazine(Magazine magazine) {
+        if (!borrowedItems.contains(magazine) && canBorrow()) {
+            borrowedItems.add(magazine.getId());
+            borrowedBooksCount++;
+        }
+    }
     public void returnItem(Book book) {
-        if (borrowedItems.containsKey(book)) {
+        if (borrowedItems.contains(book)) {
             borrowedItems.remove(book);
             borrowedBooksCount--;
         }
@@ -57,40 +69,30 @@ public class User {
         return bookRatings.getOrDefault(book, 0);
     }
 
-    public int getDaysBorrowed(Item item) {
-        return borrowedItems.getOrDefault(item, 0);
-    }
+//    public int getDaysBorrowed(Item item) {
+//        return borrowedItems.getOrDefault(item, 0);
+//    }
 
     public void payFine(double amount) {
         fineAmount -= amount;
         System.out.println("Ödenen Ceza Miktarı: " + amount);
     }
 
-    public boolean hasOverdueItems() {
-        for (Map.Entry<Item, Integer> entry : borrowedItems.entrySet()) {
-            if (entry.getValue() > 14) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public double getTotalFineAmount() {
         return fineAmount;
     }
 
-    public boolean hasBorrowed(Item item) {
-        return borrowedItems.containsKey(item);
+    public boolean bookHasBorrowed(Book book) {
+        return borrowedItems.contains(book);
     }
-    public void borrow(Magazine magazine) {
-        if (!borrowedItems.containsKey(magazine) && canBorrow() && !hasOverdueItems()) {
-            borrowedItems.put(magazine, 7); // 1 hafta ödünç alma süresi
-            borrowedBooksCount++;
-        }
+    public boolean magazineHasBorrowed(Magazine magazine) {
+        return borrowedItems.contains(magazine);
     }
 
+
     public void returnItem(Magazine magazine) {
-        if (borrowedItems.containsKey(magazine)) {
+        if (borrowedItems.contains(magazine)) {
             borrowedItems.remove(magazine);
             borrowedBooksCount--;
         }

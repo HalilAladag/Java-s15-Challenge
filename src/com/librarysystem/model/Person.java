@@ -10,6 +10,6 @@ public abstract class Person {
         this.id = id;
         this.name = name;
     }
-
-    public abstract List<Item> getBorrowedItems();
+/*
+    public abstract List<Item> getBorrowedItems();*/
 }
