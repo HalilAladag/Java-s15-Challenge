@@ -19,10 +19,11 @@ public class Main {
 
         Category category1 = new Category(1, "Distopik Roman");
         Category category2 = new Category(2, "Roman");
-        Category category3 = new Category(3, "testo?");
+        Category category3 = new Category(3, "test");
 
         Publisher publisher1 = new Publisher(1, "Yayınevi", "Can Yayınları");
         Publisher publisher2 = new Publisher(1, "Yayınevi", "Can Yayınları");
+
 
         User user1 = new User(1, "1", "1");
         User user2 = new User(2, "test2", "Halil");
@@ -30,12 +31,12 @@ public class Main {
         addUser(library, user1);
         addUser(library, user2);
 
-        Book book1 = new Book(1, "1984", author1, category1, false, 5);
-        Book book2 = new Book(2, "Körlük", author2, category2, false, 4);
-        Book book3 = new Book(3, "test2", author3, category3, false, 1);
-        Book book4 = new Book(4, "test3", author3, category3, false, 1);
-        Book book5 = new Book(5, "test4", author3, category3, false, 1);
-        Book book6 = new Book(6, "test5", author3, category3, true, 2);
+        Book book1 = new Book(1, "1984", author1, category1, false, 5, "Can Yayınları");
+        Book book2 = new Book(2, "Körlük", author2, category2, false, 4,"Can Yayınları");
+        Book book3 = new Book(3, "test2", author3, category3, false, 1,"Can Yayınları");
+        Book book4 = new Book(4, "test3", author3, category3, false, 1,"Can Yayınları");
+        Book book5 = new Book(5, "test4", author3, category3, false, 1,"Can Yayınları");
+        Book book6 = new Book(6, "test5", author3, category3, false, 2,"Can Yayınları");
 
         addBook(library, book1);
         addBook(library, book2);
@@ -138,13 +139,15 @@ public class Main {
         System.out.println("İade etmek istediğiniz kitaplar:");
         ArrayList borrowedItems = new ArrayList(user.getBorrowedBooks());
         borrowedItems.addAll(user.getBorrowedMagazines());
-        for (int i = 0; i < borrowedItems.size() - 1; i++) {
+
+        for (int i = 0; i < borrowedItems.size(); i++) {
             Object item = borrowedItems.get(i);
             if (item instanceof Book) {
                 Book book = (Book) item;
                 System.out.println((i + 1) + ". " + book.getName());
             }
         }
+
         System.out.print("İade etmek istediğiniz kitap ID'sini girin: ");
         int bookNumber = scanner.nextInt();
         scanner.nextLine();
@@ -152,17 +155,24 @@ public class Main {
         if (bookNumber >= 1 && bookNumber <= borrowedItems.size()) {
             Book book = (Book) borrowedItems.get(bookNumber - 1);
             if (book instanceof Book && user.bookHasBorrowed((Book) book)) {
+                System.out.print("Kitaba puan vermek istiyor musunuz? (Evet/Hayır): ");
+                String ratingChoice = scanner.nextLine();
+
+                if (ratingChoice.equalsIgnoreCase("Evet")) {
+                    System.out.print("1 ile 5 arasında puan giriniz): ");
+                    int rating = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (rating >= 1 && rating <= 5) {
+                        book.setRating(rating);
+                        System.out.println("Puanınız kaydedildi.");
+                    } else {
+                        System.out.println("Geçersiz puan değeri.");
+                    }
+                }
+
                 user.returnItem((Book) book);
                 library.addBook((Book) book);
-
-//                int daysBorrowed = user.getDaysBorrowed((Book) book);
-//                if (daysBorrowed > 7) {
-//                    double fine = (daysBorrowed - 7) * 0.5;
-//                    user.payFine(fine);
-//                    System.out.println(((Book) book).getName() + " kitabı iade edildi. " + fine + " dolar ceza ödendi.");
-//                } else {
-//                    System.out.println(((Book) book).getName() + " kitabı iade edildi.");
-//                }
                 System.out.println(((Book) book).getName() + " kitabı iade edildi.");
             } else {
                 System.out.println("Geçersiz seçenek veya kitap kullanıcıya ait değil.");
@@ -171,6 +181,7 @@ public class Main {
             System.out.println("Geçersiz kitap ID.");
         }
     }
+
 
     private static void updateBook(User user, Library library, Scanner scanner) {
         System.out.println("Güncellemek istediğiniz kitabın ID'sini girin: ");

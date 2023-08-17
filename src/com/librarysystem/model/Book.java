@@ -10,15 +10,28 @@ public class Book extends Category {
     private Author author;
     private Category category;
     private boolean borrowed;
-    private int rating;
 
-    public Book(int id, String title, Author author, Category category, boolean borrowed, int rating) {
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    private int rating;
+    private String publisher;
+
+    public Book(int id, String name, String publisher) {
+        super(id, name);
+        this.publisher = publisher;
+    }
+
+    public Book(int id, String title, Author author, Category category, boolean borrowed, int rating, String publisher) {
         super(id, title);
         this.author = author;
         this.category = category;
         this.borrowed = borrowed;
         this.rating = rating;
         this.id = id;
+        this.publisher = publisher;
+
     }
 
 //    Category(int id, String title, Author author, Category category) {
@@ -32,6 +45,11 @@ public class Book extends Category {
     public int getRating() {
         return rating;
     }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
     public int getId() {
         return id;
     }
@@ -104,7 +122,7 @@ public class Book extends Category {
         return "Kitap : "+ getName() + "| "
                 +"Yazar: " + getAuthor().getName() + "| "
                 + "Kategori: "+getCategory().getName() + "| "
-                + "Puan:  " + getRating()+ "| "+ "Id: "+ getId();
+                + "Puan:  " + getRating()+ "| "+ "Id: "+ getId()+"| "+"Yayınevi "+ getPublisher();
     }
 
 }
