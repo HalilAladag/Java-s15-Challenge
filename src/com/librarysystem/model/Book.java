@@ -5,8 +5,6 @@ import java.util.Random;
 import java.util.Map;
 import java.util.List;
 
-import static java.lang.Character.getName;
-
 public class Book extends Category {
     private int id;
     private Author author;
@@ -65,8 +63,8 @@ public class Book extends Category {
     private ArrayList borrowedItems = new ArrayList();
     public List<Item> getBorrowedItems() {
 
-            return new ArrayList<>(borrowedItems);
-        }
+        return new ArrayList<>(borrowedItems);
+    }
         /*public boolean hasOverdueItems() {
         for (Map.Entry<Item, Integer> entry : borrowedItems.values()) {
             if (entry.getValue() > 14) {
@@ -124,7 +122,7 @@ public class Book extends Category {
         return "Kitap : "+ getName() + "| "
                 +"Yazar: " + getAuthor().getName() + "| "
                 + "Kategori: "+getCategory().getName() + "| "
-                + "Puan:  " + getRating()+ "| "+ "Id: "+ getId()+"| "+"Yayınevi "+ getPublisher();
+                + "Puan:  " + getRating()+ "| "+ "Id: "+ getId()+"| "+"Yayınevi: "+ getPublisher();
     }
 
 }

@@ -1,8 +1,8 @@
 package com.librarysystem.model;
 
 public class Publisher extends Item {
-        private String name;
-        private int id;
+    private String name;
+    private int id;
 
     public Publisher(int id, String title, String name) {
         super(id, title);
@@ -11,7 +11,7 @@ public class Publisher extends Item {
     }
 
 
-        public String getName() {
-            return name;
-        }
+    public String getName() {
+        return name;
     }
+}

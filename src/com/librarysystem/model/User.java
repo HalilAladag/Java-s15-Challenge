@@ -2,18 +2,17 @@ package com.librarysystem.model;
 
 import java.util.*;
 
-public class User extends Person {
+public class User {
 
     private String name;
     private int borrowedBooksCount;
     public ArrayList borrowedItems = new ArrayList();
     private Map<Book, Integer> bookRatings;
     private double fineAmount;
+    private double balance;
     private String password;
 
-    public User() {
-        super();
-
+    public User(int id, String name,String password, double initialBalance) {
 
         this.borrowedBooksCount = 0;
         this.borrowedItems = new ArrayList();
@@ -21,6 +20,7 @@ public class User extends Person {
         this.fineAmount = 0;
         this.password = password;
         this.name =  name;
+        this.balance = initialBalance;
     }
 
     public boolean canBorrow() {
@@ -42,11 +42,14 @@ public class User extends Person {
     public List<Magazine> getBorrowedMagazines() {
         return new ArrayList<>(borrowedItems);
     }
-    public void borrowBook(Book book) {
-        if (!borrowedItems.contains(book) && canBorrow()) {
+    public boolean borrowBook(Book book) {
+        if (!borrowedItems.contains(book) && canBorrow() && balance >= 5.0) {
             borrowedItems.add(book.getId());
             borrowedBooksCount++;
+            balance-= 5;
+            return true;
         }
+        return false;
     }
     public void borrowMagazine(Magazine magazine) {
         if (!borrowedItems.contains(magazine) && canBorrow()) {
@@ -107,6 +110,13 @@ public class User extends Person {
     //}
     public String getPassword() {
         return password;
+    }
+    public double getBalance() {
+        return balance;
+    }
+
+    public double getFineAmount() {
+        return fineAmount;
     }
 }
 

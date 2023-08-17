@@ -1,6 +1,6 @@
 package com.librarysystem.model;
 
-public class Magazine extends Category{
+public class Magazine extends Item{
     private Publisher publisher;
     private boolean borrowed;
 
@@ -36,7 +36,7 @@ public class Magazine extends Category{
         }
     }
 
-   // @Override
+    // @Override
     public void returnItem(User user) {
         if (borrowed && user.magazineHasBorrowed(this)) {
             borrowed = false;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Library extends Item{
+public class Library {
     private ArrayList librarians;
     private List<User> users;
     private ArrayList books;
@@ -68,6 +68,17 @@ public class Library extends Item{
         }
         return booksInCategory;
     }
+    public Book getBookById(int bookID) {
+        for (Object item : books) {
+            if (item instanceof Book) {
+                Book book = (Book) item;
+                if (book.getId() == bookID) {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
 
     public List<Magazine> getMagazinesByCategory(String categoryName) {
         List<Magazine> magazinesInCategory = new ArrayList<>();
@@ -101,8 +112,8 @@ public class Library extends Item{
             if (item instanceof Author) {
                 Author a = (Author) item;
                 authorInfo = a;
+            }
         }
-    }
         return authorInfo;
     }
 
@@ -117,4 +128,5 @@ public class Library extends Item{
         }
         return magazinesByAuthor;
     }
+
 }

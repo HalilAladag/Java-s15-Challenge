@@ -1,9 +1,11 @@
 package com.librarysystem.model;
 
-public class Librarian extends User {
+import java.util.List;
+
+public class Librarian extends Person {
 
     public Librarian(int id, String name) {
-        super();
+        super(id, name);
     }
 
     /*@Override

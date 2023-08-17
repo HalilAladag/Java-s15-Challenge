@@ -21,12 +21,13 @@ public class Main {
         Category category2 = new Category(2, "Roman");
         Category category3 = new Category(3, "test");
 
+
         Publisher publisher1 = new Publisher(1, "Yayınevi", "Can Yayınları");
         Publisher publisher2 = new Publisher(1, "Yayınevi", "Can Yayınları");
 
 
-        User user1 = new User();
-        User user2 = new User();
+        User user1 = new User(1, "halil", "halil", 50);
+        User user2 = new User(2, "1", "1", 30);
 
         addUser(library, user1);
         addUser(library, user2);
@@ -72,7 +73,7 @@ public class Main {
             return;
         }
 
-        System.out.println("Hoş geldiniz, " + currentUser.getName() + "! Lütfen yapmak istediğiniz işlemi tuşlayın.");
+        System.out.println("Hoş geldiniz, " + currentUser.getName() +"! "+ " Bakiyeniz: " + currentUser.getBalance()+ "." +" Lütfen yapmak istediğiniz işlemi seçin.");
 
         while (true) {
             System.out.println("1. Kitapları Listele");
@@ -119,14 +120,14 @@ public class Main {
         System.out.print("Almak istediğiniz kitap ID'sini giriniz: ");
         int bookID = scanner.nextInt();
         scanner.nextLine();
-        Object item = library.getBooks().get(bookID);
-        if (item instanceof Book) {
-            Book book = (Book) item;
+        Book book = library.getBookById(bookID);
+
+        if (book != null) {
             if (user.canBorrow()) {
                 user.borrowBook(book);
                 user.borrowedItems.add(book);
                 library.removeBook(book);
-                System.out.println(book.getName() + " ödünç alındı.");
+                System.out.println(book.getName() + " ödünç alındı. Kalan Bakiyeniz: " + user.getBalance());
             } else {
                 System.out.println("Ödünç alınamadı. Limitiniz dolu.");
             }
@@ -155,7 +156,7 @@ public class Main {
         if (bookNumber >= 1 && bookNumber <= borrowedItems.size()) {
             Book book = (Book) borrowedItems.get(bookNumber - 1);
             if (book instanceof Book && user.bookHasBorrowed((Book) book)) {
-                System.out.print("Kitaba puan vermek istiyor musunuz? (Evet/Hayır): ");
+                System.out.print("Kitaba puan vermek istiyor musunuz ? (Evet/Hayır) : ");
                 String ratingChoice = scanner.nextLine();
 
                 if (ratingChoice.equalsIgnoreCase("Evet")) {
