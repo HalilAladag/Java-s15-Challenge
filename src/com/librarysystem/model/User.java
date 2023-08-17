@@ -2,7 +2,7 @@ package com.librarysystem.model;
 
 import java.util.*;
 
-public class User {
+public class User extends Person {
 
     private String name;
     private int borrowedBooksCount;
@@ -11,7 +11,9 @@ public class User {
     private double fineAmount;
     private String password;
 
-    public User(int id, String name,String password) {
+    public User() {
+        super();
+
 
         this.borrowedBooksCount = 0;
         this.borrowedItems = new ArrayList();

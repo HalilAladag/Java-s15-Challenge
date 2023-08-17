@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.Map;
 import java.util.List;
 
+import static java.lang.Character.getName;
+
 public class Book extends Category {
     private int id;
     private Author author;

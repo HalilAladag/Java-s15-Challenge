@@ -1,14 +1,12 @@
 package com.librarysystem.model;
 
-import java.util.List;
-
 public abstract class Person {
     private int id;
     private String name;
 
-    public Person(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public Person() {
+        this.id = this.id;
+        this.name = this.name;
     }
 /*
     public abstract List<Item> getBorrowedItems();*/

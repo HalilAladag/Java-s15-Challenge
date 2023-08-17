@@ -15,10 +15,6 @@ public class Author extends Item {
         authors.add(this);
     }
 
-    public List<Item> getBorrowedItems() {
-        return null;
-    }
-
     public String getName() {
         return name;
     }

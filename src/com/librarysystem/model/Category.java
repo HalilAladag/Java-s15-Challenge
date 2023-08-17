@@ -1,6 +1,6 @@
 package com.librarysystem.model;
 
-public class Category {
+public class Category extends Library {
     private String name;
     private int id;
 

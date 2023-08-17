@@ -25,8 +25,8 @@ public class Main {
         Publisher publisher2 = new Publisher(1, "Yayınevi", "Can Yayınları");
 
 
-        User user1 = new User(1, "1", "1");
-        User user2 = new User(2, "test2", "Halil");
+        User user1 = new User();
+        User user2 = new User();
 
         addUser(library, user1);
         addUser(library, user2);

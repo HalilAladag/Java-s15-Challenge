@@ -1,6 +1,6 @@
 package com.librarysystem.model;
 
-public class Magazine extends Item{
+public class Magazine extends Category{
     private Publisher publisher;
     private boolean borrowed;
 
